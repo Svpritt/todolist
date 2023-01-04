@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
+    <title>To do List</title>
+  
+</head>
+<body>
+    <header class="header">
+        <div class="header__main">
+            <h1 class="header__text">
+                TO DO LIST
+            </h1>
+        </div>
+    </header>
+    <div class="container">
+        <div class="main">
+            <div class="main__form">
+                <label for="">
+                    <input type="text" class="main__form-input" required>
+                    <span class="main__form-input-label">new task</span>
+                </label>
+                <div class="chebox-input">
+                    <input type="checkbox" id="urgently">
+                    <p>Prioritet!</p>
+                    <button class="main__form-button">submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h2 class="station">
+            TODO
+        </h2>
+        <ul id="incomplete_tasks">
+            <li>
+                <input type="checkbox">
+                <label>Pay Bills</label>
+                <input type="text">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </li>
+              <li class="editMode">
+                <input type="checkbox">
+                <label>Go Shopping</label>
+                <input type="text" value="Go Shopping">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </li>
+        </ul>
+        <h2 class="station">
+            COMPLETED
+        </h2>
+        <ul id="completed-tasks">
+            <li>
+                <input type="checkbox" checked="">
+                <label>See the Doctor</label>
+                <input type="text">
+                <button class="edit">Edit</button>
+                <button class="delete">Delete</button>
+              </li>
+        </ul>
+    </div>
+    <script src="index.js"> </script>
+</body>
+</html>
