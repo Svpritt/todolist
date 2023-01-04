@@ -58,3 +58,10 @@ let deleteTask = function () {
     ul.removeChild(listItem);
     }
 
+  let taskIncomplete = function() {
+        console.log("Task Incomplete...");
+           //When the checkbox is unchecked appendTo #incomplete-tasks
+        let listItem = this.parentNode;
+        incompleteTasksHolder.appendChild(listItem);
+        bindTaskEvents(listItem, taskCompleted);
+      }
