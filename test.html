@@ -4,29 +4,46 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="test.css">
+      <link rel="stylesheet" href="test.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
+    <title>To do List</title>
+  
 </head>
 <body>
-    <div class="input-container">
-        <label class="input-label" for="#">
-          <input class="input" type="text" required />
-          <span class="label-span">First Name</span>
-        </label>
-      </div>
-  
-      <div class="input-container">
-        <label class="input-label" for="#">
-          <input class="input" type="text" required/>
-          <span class="label-span">Surname</span>
-        </label>
-      </div>
-  
-      <div class="input-container">
-        <label class="input-label" for="#">
-          <input class="input" type="text" required/>
-          <span class="label-span">Email</span>
-        </label>
-      </div>
+    <header class="header">
+        <div class="header__main">
+            <h1 class="header__text">
+                TO DO LIST
+            </h1>
+        </div>
+    </header>
+    <div class="container">
+        <div class="main">
+            <div class="main__form">
+                <label for="">
+                    <input type="text" class="main__form-input" required>
+                    <span class="main__form-input-label">new task</span>
+                </label>
+                <div class="chebox-input">
+                    <input type="checkbox" id="urgently">
+                    <p>Prioritet!</p>
+                    <button class="main__form-button">submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h2 class="station">
+            TODO
+        </h2>
+        <ul id="incomplete_tasks">
+        </ul>
+        <h2 class="station">
+            COMPLETED
+        </h2>
+        <ul id="completed-tasks">
+        </ul>
+    </div>
+    <script src="test.js"> </script>
 </body>
 </html>
