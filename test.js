@@ -4,9 +4,16 @@ const prioritetCheckbox = document.getElementById("urgently"); //Чек бокс
 const incompleteTasksHolder = document.getElementById("incomplete_tasks"); //incomplete-tasks незя
 const completedTasksHolder = document.getElementById("completed-tasks"); //completed-tasks
 // поидее из этих перменных нужно достать значения в другую перменную и она будет или из локал стредж или их передавать в циклы внизу
-
-
 let tasks = [];
+if ( localStorage.getItem('tasks')) {
+  tasks = JSON.parse(localStorage.getItem('tasks'));
+}
+tasks.forEach 
+
+//СОБСтвенно последний шрих форич без понятия как реализовать его в такой когале
+
+
+
 
 let addNewTask = function() {
   let createNewTask = function() {
@@ -23,80 +30,47 @@ let addNewTask = function() {
         deleteButton.innerText = "Delete";
         deleteButton.className = "delete";
         
-        console.log(tasks);
         const newTask = {
           id: Date.now(),
           text:taskInput.value,
-          done: true,
+          done: false,
         }
-        // tasks.push(newTask);
-        // tasks.push(newTask);
-        // const ulName = newTask.done ? checkBox.checked = true : checkBox.checked = false ;// короче тут логика да нет. но хз как настроить
-        // if (ulName) {
-        //     newTask.done = true;
-        //     checkBox.checked = true;
-        //     completedTasksHolder.appendChild(listItem);
-        //     // tasks.push(newTask);
-        // } else {
-        //     newTask.done = false;
-        //     checkBox.checked = false;
-        //     incompleteTasksHolder.appendChild(listItem);
-        //     // tasks.push(newTask);
-        // }
         editButton.onclick = editTask;
         deleteButton.onclick = deleteTask;
         listItem.id = newTask.id;
         label.innerText = newTask.text;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
         checkBox.checked = newTask.done;
         tasks.push(newTask);
+        saveToLocalStorage();
         let newTaskDone = newTask.done ? completedTasksHolder.appendChild(listItem) : incompleteTasksHolder.appendChild(listItem);
-        checkBox.onchange = function changeTask()
-        {
-          if(checkBox.checked)
-          {
+        checkBox.onchange = function changeTask(){
+          if(checkBox.checked){
             newTask.done = true;
-            completedTasksHolder.appendChild(listItem);
-          }
-          else
-          {
+            saveToLocalStorage();
+            completedTasksHolder.appendChild(listItem); } else {
             newTask.done = false;
-            incompleteTasksHolder.appendChild(listItem);
-          }
-        }
+            saveToLocalStorage();
+            incompleteTasksHolder.appendChild(listItem); }}
         // каждый элемент помещаем вконце лист итема 
         listItem.appendChild(checkBox);
         listItem.appendChild(label);
         listItem.appendChild(editInput);
         listItem.appendChild(editButton);
-        listItem.appendChild(deleteButton);
-        
-            return listItem, newTaskDone;
-            
+        listItem.appendChild(deleteButton);    
+            return listItem, newTaskDone;        
 }
+
     console.log(taskInput.value); //рповерил вывод в консоль, вначале не был указан элемент в массиве от className и получал ундефайнд
-    
-    // let newTaskDone = createNewTask(tasks.done)
     let listItem = createNewTask(tasks); //собственно помещаем в переменную ее создание, а аргументом функции передаем таск инпут валуе и он передается в лейбл как иннер текст
-    // let checkBoxIn = listItem.getElementsByTagName("input").checkbox;
-    //задача в виде обьекта
-    // if (/*тут должно быть условие, но я не могу достучаться до значения в done */newTaskDone) {
-    //   incompleteTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере. 
-    // } else {
-    //   completedTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере.  
-    // }
     // подсвечиваю задачу если она приоритет
-    // if (prioritetCheckbox.checked) {
-    //     incompleteTasksHolder.prepend(listItem); // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
-    //     listItem.classList.add("prioritet");
-    //     console.log(prioritetCheckbox.type)
-    // } else {
-    //     incompleteTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере.  
-    // }
-    
+    if (prioritetCheckbox.checked) {
+         // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
+        listItem.classList.add("prioritet");
+        console.log(prioritetCheckbox.type)
+    }
     taskInput.value = ""; // очищаем значение инпута после срабатывания события. (обязатльно вконце)
     prioritetCheckbox.checked = false;  //обнуляем чекед после сабмита
-
-    
+    saveToLocalStorage();
 }
 
 addButton.addEventListener("click", addNewTask); //слушатель на клик для аддБаттон - он работает или по айди. или нужно указывать элемент массива явно. поскольку всякие ClassName & ByTagName - передают коллекцию, то массив не может быть равен функции. но может содержать ее. поэтому нужно явное указание.
@@ -104,68 +78,49 @@ addButton.addEventListener("click", addNewTask); //слушатель на кл�
 const deleteTask = function () {
   console.log("Delete Task...");
   //Remove the parent list item from the ul
-  let listItem = this.parentNode;
+  let listItem = this.parentNode;  //мой перент нод епта
   let ul = listItem.parentNode;
+  const id = Number(listItem.id); //елемент вытягивается из HTML абсолютно все что есть в HTML = это строка
+  console.log(id);
+  // ниже по айди ищу индекс таски в массиве. 0-1-2-3-4 и т.д.
+  const index = tasks.findIndex(function(task){
+    console.log(task);
+    if (task.id === id){
+      return true
+    }
+  })
+    console.log(index);
+// индекс нашел по нему буду удалять 
+  tasks.splice(index, 1);  //первое число сам индекс от куда начать, второе - сколько шт вырезать )
+  saveToLocalStorage();
   ul.removeChild(listItem);
-
   }
 const editTask = function() {
   console.log('task edit now');
   let listItem = this.parentNode;
   let editInput = listItem.querySelector("input[type=text]");
   let label = listItem.querySelector("label");
+  const id = Number(listItem.id);
+  //ищу таску к которой обратился кнопкой. чтоб далее обратиться по ссылке к обьекту и поменять в нем значение)
+  const task = tasks.find(function(task){
+    console.log(task);
+    if (task.id === id){
+      return true
+    }});
+    
   let containsClass = listItem.classList.contains("editMode");
   if (containsClass) {
-      //Switch from .editMode
-      //label text become the input's value
       label.innerText = editInput.value;
+      task.text = label.innerText;
   } else {
-      //Switch to .editMode
-      //input value becomes the labels text
-         editInput.value = label.innerText;
+      editInput.value = label.innerText;
+      editInput.value = task.text; //пока не понял как записать значение без действия
   }
   //Toggle .editMode on the parent 
   listItem.classList.toggle("editMode");
+  saveToLocalStorage();
 }
-// const taskCompleted = function() {
-//       console.log("Task Complete...");
-//      //When the Checkbox is checked 
-//      //Append the task list item to the #completed-tasks ul
-//       let listItem = this.parentNode;
-//       completedTasksHolder.appendChild(listItem);
-//       // changeTask(ulName());
-//       //поскольку каждый лист живет отдельно мне нужно локал сторедж джлдя каждого
-//    }
-   //отметить задачу incomplete
-// const taskIncomplete = function() {
-//      console.log("Task Incomplete...");
-//         //When the checkbox is unchecked appendTo #incomplete-tasks
-//      let listItem = this.parentNode;
-//      incompleteTasksHolder.appendChild(listItem); //двебанорот
-//     //  changeTask(ulName());
-//       //поскольку каждый лист живет отдельно мне нужно локал сторедж джлдя каждого
-//   }
-// const taskEventsLi = function(taskListItem,checkBoxEventHandler) {
-//   console.log("bind elements in list item");
-//   let checkBox = taskListItem.querySelector('input[type="checkbox"]');
-//   let deleteButton = taskListItem.querySelector("button.delete"); //эта штука не видит ничего за пределами
-//   let editButton = taskListItem.querySelector("button.edit");
 
-//     //что делают кнопки обьявленные выше
-//   editButton.onclick = editTask;
-//   deleteButton.onclick = deleteTask;
-//   checkBox.onchange = checkBoxEventHandler;
-// }
-// for (let i = 0; i < incompleteTasksHolder.children.length; i ++) {
-//   //bind events to list item's children (taskCompleted)	так же мы получаем элеметы в таск ивент
-//   taskEventsLi(incompleteTasksHolder.children[i], taskCompleted);
-// }
-// //cycle over completedTaskHolder ul list items
-// for (let i = 0; i < completedTasksHolder.children.length; i ++) {
-//   //bind events to list item's children (taskCompleted)	так же мы получаем элеметы в таск ивент
-//   taskEventsLi(completedTasksHolder.children[i], taskIncomplete);
-// }
-
-
-//логика на выполнение задач
-//тернарный оператор
+function saveToLocalStorage() {
+  localStorage.setItem('tasks', JSON.stringify(tasks))
+}
