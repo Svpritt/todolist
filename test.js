@@ -9,45 +9,47 @@ const completedTasksHolder = document.getElementById("completed-tasks"); //compl
 let tasks = [];
 
 let addNewTask = function() {
-  
-  let createNewTask = function(myNewTask) {
+  let createNewTask = function() {
     let listItem = document.createElement("li");
     let checkBox = document.createElement("input");
     let label = document.createElement("label");
     let editInput = document.createElement("input");
     let editButton = document.createElement("button");
     let deleteButton = document.createElement("button");
-    
         checkBox.type = "checkBox";
-        editInput.type = "text";
-        
+        editInput.type = "text";    
         editButton.innerText = "Edit";
         editButton.className = "edit";
         deleteButton.innerText = "Delete";
         deleteButton.className = "delete";
         
+        console.log(tasks);
         const newTask = {
           id: Date.now(),
-          text:label.innerText,
-          done: false,
+          text:taskInput.value,
+          done: true,
         }
-        
-        tasks.push(newTask);
-        const ulName = newTask.done ? checkBox.checked = true : checkBox.checked = false ;// короче тут логика да нет. но хз как настроить
-        if (ulName) {
-            newTask.done = true;
-            checkBox.checked = true;
-            completedTasksHolder.appendChild(listItem);
-        } else {
-            newTask.done = false;
-            checkBox.checked = false;
-            incompleteTasksHolder.appendChild(listItem);
-        }
-        console.log(tasks);
-        listItem.id = newTask.id;
-        label.innerText = myNewTask;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
+        // tasks.push(newTask);
+        // tasks.push(newTask);
+        // const ulName = newTask.done ? checkBox.checked = true : checkBox.checked = false ;// короче тут логика да нет. но хз как настроить
+        // if (ulName) {
+        //     newTask.done = true;
+        //     checkBox.checked = true;
+        //     completedTasksHolder.appendChild(listItem);
+        //     // tasks.push(newTask);
+        // } else {
+        //     newTask.done = false;
+        //     checkBox.checked = false;
+        //     incompleteTasksHolder.appendChild(listItem);
+        //     // tasks.push(newTask);
+        // }
         editButton.onclick = editTask;
         deleteButton.onclick = deleteTask;
+        listItem.id = newTask.id;
+        label.innerText = newTask.text;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
+        checkBox.checked = newTask.done;
+        tasks.push(newTask);
+        let newTaskDone = newTask.done ? completedTasksHolder.appendChild(listItem) : incompleteTasksHolder.appendChild(listItem);
         checkBox.onchange = function changeTask()
         {
           if(checkBox.checked)
@@ -60,7 +62,6 @@ let addNewTask = function() {
             newTask.done = false;
             incompleteTasksHolder.appendChild(listItem);
           }
-        
         }
         // каждый элемент помещаем вконце лист итема 
         listItem.appendChild(checkBox);
@@ -68,24 +69,30 @@ let addNewTask = function() {
         listItem.appendChild(editInput);
         listItem.appendChild(editButton);
         listItem.appendChild(deleteButton);
-
         
-            return listItem;
+            return listItem, newTaskDone;
+            
 }
     console.log(taskInput.value); //рповерил вывод в консоль, вначале не был указан элемент в массиве от className и получал ундефайнд
     
-    let myNewTask = taskInput.value;
-    let listItem = createNewTask(myNewTask); //собственно помещаем в переменную ее создание, а аргументом функции передаем таск инпут валуе и он передается в лейбл как иннер текст
+    // let newTaskDone = createNewTask(tasks.done)
+    let listItem = createNewTask(tasks); //собственно помещаем в переменную ее создание, а аргументом функции передаем таск инпут валуе и он передается в лейбл как иннер текст
+    // let checkBoxIn = listItem.getElementsByTagName("input").checkbox;
     //задача в виде обьекта
-    
+    // if (/*тут должно быть условие, но я не могу достучаться до значения в done */newTaskDone) {
+    //   incompleteTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере. 
+    // } else {
+    //   completedTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере.  
+    // }
     // подсвечиваю задачу если она приоритет
-    if (prioritetCheckbox.checked) {
-        incompleteTasksHolder.prepend(listItem); // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
-        listItem.classList.add("prioritet");
-    } else {
-        incompleteTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере.  
-    }
-   
+    // if (prioritetCheckbox.checked) {
+    //     incompleteTasksHolder.prepend(listItem); // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
+    //     listItem.classList.add("prioritet");
+    //     console.log(prioritetCheckbox.type)
+    // } else {
+    //     incompleteTasksHolder.appendChild(listItem); //присваеваем абзацу с невыполненными тасками методом Вконец списка аргумент значение лист итема именно эта строчка делает магию и значение из переменной выводится в браузере.  
+    // }
+    
     taskInput.value = ""; // очищаем значение инпута после срабатывания события. (обязатльно вконце)
     prioritetCheckbox.checked = false;  //обнуляем чекед после сабмита
 
