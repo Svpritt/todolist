@@ -1,6 +1,6 @@
 const taskInput = document.getElementsByClassName("main__form-input")[0]; // короче класс-нейм и -тег нейм это по факту массивы коллекции поэтому нужно указывать че к чему явно особенно при вызове функций к ним или действий иначе фатал эррор или ундифайнд
 const addButton = document.getElementsByTagName("button")[0];//first button по идее можно квери селектор ибо оно статично тут
-const prioritetCheckbox = document.getElementById("urgently"); //Чек бокс из первого инпута, для включения или выключения приоритета (обнулять когда таска создана)
+const priorityCheckbox = document.getElementById("urgently"); //Чек бокс из первого инпута, для включения или выключения приоритета (обнулять когда таска создана)
 const incompleteTasksHolder = document.getElementById("incomplete_tasks"); //incomplete-tasks незя
 const completedTasksHolder = document.getElementById("completed-tasks"); //completed-tasks
 // поидее из этих перменных нужно достать значения в другую перменную и она будет или из локал стредж или их передавать в циклы внизу
@@ -54,99 +54,139 @@ const editTask = function() {
   saveToLocalStorage();
 }
 
-//СОБСтвенно последний шрих форич без понятия как реализовать его в такой когале
-tasks.forEach(function(task){
+// Функция для создания элементов списка и настройки их свойств
+function createListItem() {
   let listItem = document.createElement("li");
   let checkBox = document.createElement("input");
   let label = document.createElement("label");
   let editInput = document.createElement("input");
   let editButton = document.createElement("button");
   let deleteButton = document.createElement("button");
-      checkBox.type = "checkBox";
-      editInput.type = "text";    
-      editButton.innerText = "Edit";
-      editButton.className = "edit";
-      deleteButton.innerText = "Delete";
-      deleteButton.className = "delete";
-      editButton.onclick = editTask;
-      deleteButton.onclick = deleteTask;
-      listItem.id = task.id;
-      label.innerText = task.text;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
-      checkBox.checked = task.done;
-      if (task.isHighpriority === 'prioritet') {
-        // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
-       listItem.classList.add("prioritet");
-       task.isHighpriority = 'prioritet';
-   }
-      checkBox.onchange = function changeTask(){
-        if(checkBox.checked){
-          task.done = true;
-          saveToLocalStorage();
-          completedTasksHolder.appendChild(listItem); } else {
-          task.done = false;
-          saveToLocalStorage();
-          incompleteTasksHolder.appendChild(listItem); }}
-      let newTaskDone = task.done ? completedTasksHolder.appendChild(listItem) : incompleteTasksHolder.appendChild(listItem);
-      listItem.appendChild(checkBox);
-      listItem.appendChild(label);
-      listItem.appendChild(editInput);
-      listItem.appendChild(editButton);
-      listItem.appendChild(deleteButton);    
-          return listItem, newTaskDone;    
-})
-
-let createNewTask = function() {
-  let listItem = document.createElement("li");
-  let checkBox = document.createElement("input");
-  let label = document.createElement("label");
-  let editInput = document.createElement("input");
-  let editButton = document.createElement("button");
-  let deleteButton = document.createElement("button");
-      checkBox.type = "checkBox";
-      editInput.type = "text";    
-      editButton.innerText = "Edit";
-      editButton.className = "edit";
-      deleteButton.innerText = "Delete";
-      deleteButton.className = "delete";
-      
-      const newTask = {
-        id: Date.now(),
-        text:taskInput.value,
-        done: false,
-        isHighpriority: '',
-      }
-      editButton.onclick = editTask;
-      deleteButton.onclick = deleteTask;
-      listItem.id = newTask.id;
-      label.innerText = newTask.text;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
-      checkBox.checked = newTask.done;
-      if (prioritetCheckbox.checked) {
-        // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
-       listItem.classList.add("prioritet");
-       newTask.isHighpriority = 'prioritet';
-       console.log(prioritetCheckbox.type)
-   }
-      tasks.push(newTask);
-      // saveToLocalStorage();
-      let newTaskDone = newTask.done ? completedTasksHolder.appendChild(listItem) : incompleteTasksHolder.appendChild(listItem);
-      checkBox.onchange = function changeTask(){
-        if(checkBox.checked){
-          newTask.done = true;
-          saveToLocalStorage();
-          completedTasksHolder.appendChild(listItem); } else {
-          newTask.done = false;
-          saveToLocalStorage();
-          incompleteTasksHolder.appendChild(listItem); }}
-      // каждый элемент помещаем вконце лист итема 
-      
-      listItem.appendChild(checkBox);
-      listItem.appendChild(label);
-      listItem.appendChild(editInput);
-      listItem.appendChild(editButton);
-      listItem.appendChild(deleteButton);    
-          return listItem, newTaskDone;        
+  
+  checkBox.type = "checkbox";
+  editInput.type = "text";
+  editButton.innerText = "Edit";
+  editButton.className = "edit";
+  deleteButton.innerText = "Delete";
+  deleteButton.className = "delete";
+  
+  editButton.onclick = editTask;
+  deleteButton.onclick = deleteTask;
+  
+  listItem.appendChild(checkBox);
+  listItem.appendChild(label);
+  listItem.appendChild(editInput);
+  listItem.appendChild(editButton);
+  listItem.appendChild(deleteButton);
+  
+  return { listItem, checkBox, label, editInput, editButton, deleteButton };
 }
 
+// Функция для обработки существующих задач
+function changeTask(task, checkBox, listItem) {
+  task.done = checkBox.checked;
+  saveToLocalStorage();
+
+  if (checkBox.checked) {
+    if (task.isHighpriority === 'priority') {
+      completedTasksHolder.prepend(listItem);
+    } else {
+      completedTasksHolder.appendChild(listItem);
+    }
+  } else {
+    if (task.isHighpriority === 'priority') {
+      incompleteTasksHolder.prepend(listItem);
+    } else {
+      incompleteTasksHolder.appendChild(listItem);
+    }
+  }
+}
+
+tasks.forEach(function(task) {
+  let { listItem, checkBox, label, editInput, editButton, deleteButton } = createListItem();
+
+  checkBox.type = "checkbox";
+  editInput.type = "text";
+  editButton.innerText = "Edit";
+  editButton.className = "edit";
+  deleteButton.innerText = "Delete";
+  deleteButton.className = "delete";
+
+  editButton.onclick = editTask;
+  deleteButton.onclick = deleteTask;
+
+  listItem.id = task.id;
+  label.innerText = task.text;
+  checkBox.checked = task.done;
+
+  if (task.isHighpriority === 'priority') {
+    listItem.classList.add("priority");
+    task.isHighpriority = 'priority';
+  }
+
+  checkBox.onchange = function() {
+    changeTask(task, checkBox, listItem);
+  };
+
+  let newTaskDone;
+  if (task.done) {
+    if (task.isHighpriority === 'priority') {
+      newTaskDone = completedTasksHolder.prepend(listItem);
+    } else {
+      newTaskDone = completedTasksHolder.appendChild(listItem);
+    }
+  } else {
+    if (task.isHighpriority === 'priority') {
+      newTaskDone = incompleteTasksHolder.prepend(listItem);
+    } else {
+      newTaskDone = incompleteTasksHolder.appendChild(listItem);
+    }
+  }
+
+  console.log("Code executed:", newTaskDone);
+});
+// Функция для создания новой задачи
+let createNewTask = function() {
+  let taskText = taskInput.value.trim(); // Удаляем пробелы в начале и конце текста задачи
+  if (taskText !== '') { // Проверяем, что текст задачи не пустой
+  let { listItem, checkBox, label, editInput, editButton, deleteButton } = createListItem();
+
+  const newTask = {
+    id: Date.now(),
+    text: taskInput.value,
+    done: false,
+    isHighpriority: ''
+  };
+
+  editButton.onclick = editTask;
+  deleteButton.onclick = deleteTask;
+
+  listItem.id = newTask.id;
+  label.innerText = newTask.text;
+  checkBox.checked = newTask.done;
+
+  if (priorityCheckbox.checked) {
+    listItem.classList.add("priority");
+    newTask.isHighpriority = 'priority';
+    console.log(priorityCheckbox.type);
+  }
+  tasks.push(newTask);
+  let newTaskDone;
+  if (newTask.isHighpriority === 'priority') {
+    newTaskDone = incompleteTasksHolder.prepend(listItem);
+  } else {
+    newTaskDone = incompleteTasksHolder.appendChild(listItem);
+  }
+
+  checkBox.onchange = function() {
+    changeTask(newTask, checkBox, listItem);
+  };
+  return listItem;
+} else {
+  console.log('fatal error - write text!')
+  return null; // Если текст задачи пустой, возвращаем null
+}
+};
 let addNewTask = function() {
     console.log(taskInput.value); //рповерил вывод в консоль, вначале не был указан элемент в массиве от className и получал ундефайнд
     let listItem = createNewTask(tasks); //собственно помещаем в переменную ее создание, а аргументом функции передаем таск инпут валуе и он передается в лейбл как иннер текст
@@ -154,14 +194,10 @@ let addNewTask = function() {
     
 
     taskInput.value = ""; // очищаем значение инпута после срабатывания события. (обязатльно вконце)
-    prioritetCheckbox.checked = false;  //обнуляем чекед после сабмита
+    priorityCheckbox.checked = false;  //обнуляем чекед после сабмита
     saveToLocalStorage();
 }
-
 addButton.addEventListener("click", addNewTask); //слушатель на клик для аддБаттон - он работает или по айди. или нужно указывать элемент массива явно. поскольку всякие ClassName & ByTagName - передают коллекцию, то массив не может быть равен функции. но может содержать ее. поэтому нужно явное указание.
-
-
-
 function saveToLocalStorage() {
   localStorage.setItem('tasks', JSON.stringify(tasks))
 }

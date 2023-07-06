@@ -56,7 +56,7 @@ li > input[type="text"] {
       /* снова не понятная ширина - разберусь или удалю */
 }
 
-li.prioritet {
+li.priority {
     background-color: #faebd7;
 }
 input[type="text"] {

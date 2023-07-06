@@ -55,46 +55,61 @@ const editTask = function() {
 }
 
 //СОБСтвенно последний шрих форич без понятия как реализовать его в такой когале
-tasks.forEach(function(task){
+tasks.forEach(function(task) {
   let listItem = document.createElement("li");
   let checkBox = document.createElement("input");
   let label = document.createElement("label");
   let editInput = document.createElement("input");
   let editButton = document.createElement("button");
   let deleteButton = document.createElement("button");
-      checkBox.type = "checkBox";
-      editInput.type = "text";    
-      editButton.innerText = "Edit";
-      editButton.className = "edit";
-      deleteButton.innerText = "Delete";
-      deleteButton.className = "delete";
-      editButton.onclick = editTask;
-      deleteButton.onclick = deleteTask;
-      listItem.id = task.id;
-      label.innerText = task.text;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
-      checkBox.checked = task.done;
-      if (task.isHighpriority === 'prioritet') {
-        // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
-       listItem.classList.add("prioritet");
-       task.isHighpriority = 'prioritet';
-   }
-      checkBox.onchange = function changeTask(){
-        if(checkBox.checked){
-          task.done = true;
-          saveToLocalStorage();
-          completedTasksHolder.appendChild(listItem); } else {
-          task.done = false;
-          saveToLocalStorage();
-          incompleteTasksHolder.appendChild(listItem); }}
-      let newTaskDone = task.done ? completedTasksHolder.appendChild(listItem) : incompleteTasksHolder.appendChild(listItem);
-      listItem.appendChild(checkBox);
-      listItem.appendChild(label);
-      listItem.appendChild(editInput);
-      listItem.appendChild(editButton);
-      listItem.appendChild(deleteButton);    
-          return listItem, newTaskDone;    
-})
+  checkBox.type = "checkBox";
+  editInput.type = "text";
+  editButton.innerText = "Edit";
+  editButton.className = "edit";
+  deleteButton.innerText = "Delete";
+  deleteButton.className = "delete";
+  editButton.onclick = editTask;
+  deleteButton.onclick = deleteTask;
+  listItem.id = task.id;
+  label.innerText = task.text;
+  checkBox.checked = task.done;
 
+  if (task.isHighpriority === 'prioritet') {
+    listItem.classList.add("prioritet");
+    task.isHighpriority = 'prioritet';
+    incompleteTasksHolder.prepend(listItem);
+  } else {
+    incompleteTasksHolder.appendChild(listItem);
+  }
+
+  checkBox.onchange = function changeTask() {
+    if (checkBox.checked) {
+      task.done = true;
+      saveToLocalStorage();
+      if (task.isHighpriority === 'prioritet') {
+        completedTasksHolder.prepend(listItem);
+      } else {
+        completedTasksHolder.appendChild(listItem);
+      }
+    } else {
+      task.done = false;
+      saveToLocalStorage();
+      if (task.isHighpriority === 'prioritet') {
+        incompleteTasksHolder.prepend(listItem);
+      } else {
+        incompleteTasksHolder.appendChild(listItem);
+      }
+    }
+  };
+
+  listItem.appendChild(checkBox);
+  listItem.appendChild(label);
+  listItem.appendChild(editInput);
+  listItem.appendChild(editButton);
+  listItem.appendChild(deleteButton);
+
+  return listItem;
+});
 let createNewTask = function() {
   let listItem = document.createElement("li");
   let checkBox = document.createElement("input");
@@ -109,6 +124,7 @@ let createNewTask = function() {
       deleteButton.innerText = "Delete";
       deleteButton.className = "delete";
       
+      
       const newTask = {
         id: Date.now(),
         text:taskInput.value,
@@ -120,30 +136,45 @@ let createNewTask = function() {
       listItem.id = newTask.id;
       label.innerText = newTask.text;  //по факту аргумент функции при ее вызове мы туда помещаем таск инпут валуе. который становится выше и присваивается тут перед реторном
       checkBox.checked = newTask.done;
-      if (prioritetCheckbox.checked) {
-        // добавляем абзац в начало списка если приоритет чекед НЕ ПОНЯЛ ПОЧЕМУ не prependChild
+      if (priorityCheckbox.checked) {
        listItem.classList.add("prioritet");
        newTask.isHighpriority = 'prioritet';
-       console.log(prioritetCheckbox.type)
+       console.log(priorityCheckbox.type)
+       
    }
       tasks.push(newTask);
       // saveToLocalStorage();
-      let newTaskDone = newTask.done ? completedTasksHolder.appendChild(listItem) : incompleteTasksHolder.appendChild(listItem);
+      let newTaskDone = newTask.done ? completedTasksHolder.prepend(listItem) : incompleteTasksHolder.prepend(listItem);
+      console.log("Code executed:", newTaskDone);
+
       checkBox.onchange = function changeTask(){
-        if(checkBox.checked){
+        if (checkBox.checked) {
           newTask.done = true;
           saveToLocalStorage();
-          completedTasksHolder.appendChild(listItem); } else {
+          if (newTask.isHighpriority === 'prioritet') {
+            completedTasksHolder.prepend(listItem);
+          } else {
+            completedTasksHolder.appendChild(listItem);
+            console.log('HUITA')
+          }
+        } else {
           newTask.done = false;
           saveToLocalStorage();
-          incompleteTasksHolder.appendChild(listItem); }}
-      // каждый элемент помещаем вконце лист итема 
+          if (newTask.isHighpriority === 'prioritet') {
+            incompleteTasksHolder.prepend(listItem);
+          } else {
+            incompleteTasksHolder.appendChild(listItem);
+                        console.log('HUITA')
+
+          }
+        }};
       
       listItem.appendChild(checkBox);
       listItem.appendChild(label);
       listItem.appendChild(editInput);
       listItem.appendChild(editButton);
       listItem.appendChild(deleteButton);    
+      
           return listItem, newTaskDone;        
 }
 
@@ -154,7 +185,7 @@ let addNewTask = function() {
     
 
     taskInput.value = ""; // очищаем значение инпута после срабатывания события. (обязатльно вконце)
-    prioritetCheckbox.checked = false;  //обнуляем чекед после сабмита
+    priorityCheckbox.checked = false;  //обнуляем чекед после сабмита
     saveToLocalStorage();
 }
 
