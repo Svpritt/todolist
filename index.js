@@ -1,9 +1,9 @@
-const taskInput = document.getElementsByClassName("main__form-input")[0]; // короче класс-нейм и -тег нейм это по факту массивы коллекции поэтому нужно указывать че к чему явно особенно при вызове функций к ним или действий иначе фатал эррор или ундифайнд
-const addButton = document.getElementsByTagName("button")[0];//first button по идее можно квери селектор ибо оно статично тут
-const priorityCheckbox = document.getElementById("urgently"); //Чек бокс из первого инпута, для включения или выключения приоритета (обнулять когда таска создана)
-const incompleteTasksHolder = document.getElementById("incomplete_tasks"); //incomplete-tasks незя
+const taskInput = document.getElementsByClassName("main__form-input")[0]; // in short, the class-name and -tag name are in fact collection arrays, so you need to specify what to do explicitly, especially when calling functions for them or actions, otherwise fatal error or unfind
+const addButton = document.getElementsByTagName("button")[0];//first button, in theory, you can use the selector because it is static here
+const priorityCheckbox = document.getElementById("urgently"); //Checkbox from the first input, to enable or disable the priority (reset to zero when the task is created)
+const incompleteTasksHolder = document.getElementById("incomplete_tasks"); //incomplete-tasks none
 const completedTasksHolder = document.getElementById("completed-tasks"); //completed-tasks
-// поидее из этих перменных нужно достать значения в другую перменную и она будет или из локал стредж или их передавать в циклы внизу
+// in theory, from these variables you need to get the values \u200b\u200binto another variable and it will either be from the local strand or pass them to the cycles below
 let tasks = [];
 if ( localStorage.getItem('tasks')) {
   tasks = JSON.parse(localStorage.getItem('tasks'));
@@ -11,11 +11,11 @@ if ( localStorage.getItem('tasks')) {
 const deleteTask = function () {
   console.log("Delete Task...");
   //Remove the parent list item from the ul
-  let listItem = this.parentNode;  //мой перент нод епта
+  let listItem = this.parentNode;  
   let ul = listItem.parentNode;
-  const id = Number(listItem.id); //елемент вытягивается из HTML абсолютно все что есть в HTML = это строка
+  const id = Number(listItem.id); //all elements from HTML is String by default so change it
   console.log(id);
-  // ниже по айди ищу индекс таски в массиве. 0-1-2-3-4 и т.д.
+  // find from id my task 0-1-2-3-4 etc.
   const index = tasks.findIndex(function(task){
     console.log(task);
     if (task.id === id){
@@ -23,8 +23,8 @@ const deleteTask = function () {
     }
   })
     console.log(index);
-// индекс нашел по нему буду удалять 
-  tasks.splice(index, 1);  //первое число сам индекс от куда начать, второе - сколько шт вырезать )
+   // according to the found indux, I will delete the item
+  tasks.splice(index, 1);  // the first number is the index itself from where to start, the second - how many pieces to cut)
   saveToLocalStorage();
   ul.removeChild(listItem);
   }
@@ -34,7 +34,7 @@ const editTask = function() {
   let editInput = listItem.querySelector("input[type=text]");
   let label = listItem.querySelector("label");
   const id = Number(listItem.id);
-  //ищу таску к которой обратился кнопкой. чтоб далее обратиться по ссылке к обьекту и поменять в нем значение)
+  //I'm looking for a task that I accessed with the button. to further refer to the object by reference and change the value in it)
   const task = tasks.find(function(task){
     console.log(task);
     if (task.id === id){
@@ -47,14 +47,14 @@ const editTask = function() {
       task.text = label.innerText;
   } else {
       editInput.value = label.innerText;
-      editInput.value = task.text; //пока не понял как записать значение без действия
+      editInput.value = task.text; //not yet figured out how to write a value without action
   }
   //Toggle .editMode on the parent 
   listItem.classList.toggle("editMode");
   saveToLocalStorage();
 }
 
-// Функция для создания элементов списка и настройки их свойств
+// Function for creating list items and setting their properties
 function createListItem() {
   let listItem = document.createElement("li");
   let checkBox = document.createElement("input");
@@ -82,7 +82,7 @@ function createListItem() {
   return { listItem, checkBox, label, editInput, editButton, deleteButton };
 }
 
-// Функция для обработки существующих задач
+// Function to handle existing tasks
 function changeTask(task, checkBox, listItem) {
   task.done = checkBox.checked;
   saveToLocalStorage();
@@ -145,10 +145,10 @@ tasks.forEach(function(task) {
 
   console.log("Code executed:", newTaskDone);
 });
-// Функция для создания новой задачи
+
 let createNewTask = function() {
-  let taskText = taskInput.value.trim(); // Удаляем пробелы в начале и конце текста задачи
-  if (taskText !== '') { // Проверяем, что текст задачи не пустой
+  let taskText = taskInput.value.trim(); // Remove spaces at the beginning and end of the task text
+  if (taskText !== '') { // Check if the text of the task is not empty
   let { listItem, checkBox, label, editInput, editButton, deleteButton } = createListItem();
 
   const newTask = {
@@ -184,20 +184,20 @@ let createNewTask = function() {
   return listItem;
 } else {
   console.log('fatal error - write text!')
-  return null; // Если текст задачи пустой, возвращаем null
+  return null; // If task text is empty, return null
 }
 };
 let addNewTask = function() {
-    console.log(taskInput.value); //рповерил вывод в консоль, вначале не был указан элемент в массиве от className и получал ундефайнд
-    let listItem = createNewTask(tasks); //собственно помещаем в переменную ее создание, а аргументом функции передаем таск инпут валуе и он передается в лейбл как иннер текст
-    // подсвечиваю задачу если она приоритет
+    console.log(taskInput.value); //checked the output to the console, at first the element in the array from className was not specified and received undefined
+    let listItem = createNewTask(tasks); //we actually put its creation into the variable, and pass the task input value as the function argument and it is passed to the label as an inner text
+    // highlight the task if it is a priority
     
 
-    taskInput.value = ""; // очищаем значение инпута после срабатывания события. (обязатльно вконце)
-    priorityCheckbox.checked = false;  //обнуляем чекед после сабмита
+    taskInput.value = ""; // clear the value of the input after the event fires. (required at the end)
+    priorityCheckbox.checked = false;  // reset checked after submit
     saveToLocalStorage();
 }
-addButton.addEventListener("click", addNewTask); //слушатель на клик для аддБаттон - он работает или по айди. или нужно указывать элемент массива явно. поскольку всякие ClassName & ByTagName - передают коллекцию, то массив не может быть равен функции. но может содержать ее. поэтому нужно явное указание.
+addButton.addEventListener("click", addNewTask); //click listener for addButton - it works or by id. or you need to specify the array element explicitly. since any ClassName & ByTagName - pass a collection, the array cannot be equal to the function. but may contain it. so an explicit indication is needed.
 function saveToLocalStorage() {
   localStorage.setItem('tasks', JSON.stringify(tasks))
 }

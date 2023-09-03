@@ -15,45 +15,43 @@ body {
     overflow: hidden;
     padding: 20px 0;
     border-bottom: 1px solid #eee;
-      /* хидден походу убрал мне точки, я их как то еще убирал но это в целом проще */
+/* Hidden removed the dots for me, I removed them somehow, but this is generally easier */
   }
   ul li.editMode label {
     display: none;
-      /* кусок для джавы - если у ли будет класс эдит мод */
+/* piece for js - if there is an edit mod class */
 }
 li > label {
     font-size: 18px;
     line-height: 40px;
     width: 237px;
     padding: 0 0 0 11px;
-      /* шрифты ширина и падинг слева для лейблов */
+/* font width and left padding for labels */
 }
 ul li input[type=text] {
     display: none;
-      /* кусок для джавы чтоб не отображать текст в инпуте, потому что он будет в лейбле */
+/* piece for js to not display the text in the input, because it will be in the label */
 }
 
 li > input[type="text"] {
     width: 226px;
-      /* кусок для джавы (копипаст ширины пока не понял к чему он тут) */
 }
 #completed-tasks label {
     text-decoration: line-through;
     color: #888;
-      /* кусок для джавы - если будет айди комплит то перечеркнет лейбл */
+/* piece for js - if there is an id complete, it will cross out the label */
 }
 ul li.editMode input[type=text] {
     display: block;
-      /*  кусок для джавы = если у меня эдит мод у лишки то я показываю текст который до этого был в лейбле а теперь в инпуте*/
+/* piece for js = if I have edit mode for li, then I show the text that was previously in the label and now in the input */
 }
 
 ul li input[type=text] {
     display: none;
-      /* если у меня не стоит эдит мод то сам инпут исчезает на его месте будет лейбл с тем же текстом */
+/* if I do not have edit mode, then the input itself disappears in its place there will be a label with the same text */
 }
 li > input[type="text"] {
     width: 226px;
-      /* снова не понятная ширина - разберусь или удалю */
 }
 
 li.priority {
@@ -70,14 +68,14 @@ input[type="text"] {
     border-radius: 6px;
     font-family: Lato, sans-serif;
     color: #888;
-      /* кусок для джавы тут я задаю инпуты внятный вид, рамки, радиус шрифт цвет */
+/* piece for js here I set the inputs a distinct view, frames, radius font color */
 }
 
 li > input[type="checkbox"] {
     margin: 0 10px;
     position: relative;
     top: 15px;
-      /*  кусок для джавы и важно чтоб позиция релатив ибо чек бокс нужен слева*/
+/* a piece for js and it is important that the position is relative because the checkbox is needed on the left */
 }
   button {
     background: none;
@@ -88,38 +86,35 @@ li > input[type="checkbox"] {
     margin: 10px 0 0;
     font-family: Lato, sans-serif;
     cursor: pointer;
-      /*  по факту - убрать бек, бордеры и все такое, в общем полу прозрачной сделать типа*/
+/* in fact - remove the back, borders and all that, in general, make the floor transparent like this */
   }
-.header {
-      /* допишу */
+  .header {
+    /* add */
 }
-.header__main {
-      /*  тут пока не понятно что будет*/
+.header_main {
+    /* it is not yet clear what will happen here */
 }
-.header__text {
-    display: flex;
-    justify-content: space-around;
-        /* тупо выравниюва так все в центр. много раз повтораятся зато быстро и легко */
+.header_text {
+  display:flex;
+  justify-content: space around;
+      /* stupidly align everything to the center. repeated many times but quickly and easily */
 
 }
 .container {
     display: block;
     width: 400px;
-    margin: 100px auto;    /* чисто база удобный для меня контейнер */
-
+    margin: 100px auto;
+    /* pure base container convenient for me */
 }
 .main {
     display: flex;
     justify-content: space-around;
-    /* тупо выравниюва так все в центр. много раз повтораятся зато быстро и легко */
 }
 .main__form {
     position: relative;
-    /* не понял зачем но надо*/
 }
 .main__form-input-label {
     position: absolute;
-    /* смещение относительно родительского элемента 10px вверх от верхнего края и   10px влево */
     top: -10px;
     left: 10px;
     background: #fff;
@@ -128,12 +123,11 @@ li > input[type="checkbox"] {
 .main__form-input {
     background: #fff;
     padding: 10px;
-    /* закруглим края у поля ввода */
     border-radius: 11px;
     width: 200px;
 }
 .main__form-button {
-      /* я не придумал как разместить кнопку подальше от чек бокса, и что бы она юзабельно смотрелась */
+/* I haven't figured out how to place the button away from the checkbox so that it looks usable */
     margin-left: 90px;
 }
 
@@ -142,12 +136,11 @@ li > input[type="checkbox"] {
     justify-content: space-around;
     border-bottom: 2px solid #333;
     padding: 30px 0 10px;
-      /* кусок где будет размещаться контент снизу, мне нужно отделить якобы секцию но не задать ей чегото конкретного визуальное разделение */
+/* the piece where the content will be located below, I need to separate the supposedly section but not give it something specific visual separation */
 }
 .chebox-input{
     display: flex;
     align-items: baseline;
-      /* выравнивание */
 }
 
 label input:focus + .main__form-input-label,
@@ -156,5 +149,5 @@ label input:valid + .main__form-input-label {
     left: 0.5rem;
     font-size: 0.9rem;
 }
-/* для того что бы эта фишка работала, у инпута обязательно должен быть параметр, required - без него Валид будет всегда!!*/
-/* единственное решения для анимации с этим блоком без джава скрипта которое работает идеально и сразу еще транзишн поставить и замедлить вообщзе топ */
+/* in order for this feature to work, the input must have a parameter, required - without it there will always be Valid!!*/
+/* the only solution for animation with this block without JS that works perfectly and immediately put a transition and slow down then generally top */
